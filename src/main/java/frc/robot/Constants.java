@@ -33,7 +33,5 @@ public class Constants {
         public static final int kWristMotor = 0;
 
 
-        
-        public static final int kLedsDIO = 0;
     }
 }

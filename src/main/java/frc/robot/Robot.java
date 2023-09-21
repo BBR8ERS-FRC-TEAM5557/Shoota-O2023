@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.Alert;
 import frc.lib.team6328.VirtualSubsystem;
 import frc.lib.team6328.Alert.AlertType;
-import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
@@ -44,7 +43,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         Logger logger = Logger.getInstance();
-        LEDs.getInstance();
 
         if (Constants.kIsReal) {
             String folder = "";
@@ -112,7 +110,7 @@ public class Robot extends LoggedRobot {
         }
         if (RobotController.getBatteryVoltage() < 10.0
                 && disabledTimer.hasElapsed(2.0)) {
-            LEDs.getInstance().lowBatteryAlert = true;
+            //LEDs.getInstance().lowBatteryAlert = true;
             lowBatteryAlert.set(true);
         }
     }

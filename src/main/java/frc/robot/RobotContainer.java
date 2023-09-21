@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.AutoRoutineManager;
 import frc.robot.auto.SystemsCheckManager;
-import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerIO;
 import frc.robot.subsystems.roller.RollerIOSparkMax;
@@ -44,16 +43,16 @@ public class RobotContainer {
     public static Wrist m_wrist;
     public static Roller m_roller;
 
-    //public static AutoRoutineManager m_autoManager;
+    public static AutoRoutineManager m_autoManager;
     public static SystemsCheckManager m_systemCheckManager;
 
     public RobotContainer() {
         if (kIsReal) {
-            /**m_swerve = new Swerve(new GyroIOPigeon2(),
+            m_swerve = new Swerve(new GyroIOPigeon2(),
                     new ModuleIOSparkMax(0, kFLDriveMotor, kFLTurnMotor, kFLCancoder, kFLOffset),
                     new ModuleIOSparkMax(1, kFRDriveMotor, kFRTurnMotor, kFRCancoder, kFROffset),
                     new ModuleIOSparkMax(2, kBLDriveMotor, kBLTurnMotor, kBLCancoder, kBLOffset),
-                    new ModuleIOSparkMax(3, kBRDriveMotor, kBRTurnMotor, kBRCancoder, kBROffset));*/
+                    new ModuleIOSparkMax(3, kBRDriveMotor, kBRTurnMotor, kBRCancoder, kBROffset));
             m_wrist = new Wrist(new WristIOSparkMax());
             //m_roller = new Roller(new RollerIOSparkMax());
         } else {
@@ -70,10 +69,10 @@ public class RobotContainer {
             m_wrist = new Wrist(new WristIO() {});
         }
         if (m_roller == null) {
-            m_roller = new Roller(new RollerIO() {});
+           // m_roller = new Roller(new RollerIO() {});
         }
 
-       // m_autoManager = new AutoRoutineManager(m_swerve, m_elevator);
+        m_autoManager = new AutoRoutineManager(m_swerve);
         m_systemCheckManager = new SystemsCheckManager(m_swerve);
         DriveMotionPlanner.configureControllers();
 
@@ -87,46 +86,15 @@ public class RobotContainer {
 
 
         m_swerve.setDefaultCommand(new TeleopDrive(this::getForwardInput, this::getStrafeInput,
-                this::getRotationInput, () -> m_driver.getPOV() == 180));
-
-       
-
-        // Endgame alerts
-        new Trigger(() -> DriverStation.isTeleopEnabled() && DriverStation.getMatchTime() > 0.0
-                && DriverStation.getMatchTime() <= Math.round(30.0)).onTrue(Commands.run(() -> {
-                    LEDs.getInstance().endgameAlert = true;
-                    m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                    m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                }).withTimeout(1.5).andThen(Commands.run(() -> {
-                    LEDs.getInstance().endgameAlert = false;
-                    m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                    m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                }).withTimeout(1.0)));
-
-        new Trigger(() -> DriverStation.isTeleopEnabled() && DriverStation.getMatchTime() > 0.0
-                && DriverStation.getMatchTime() <= Math.round(15.0))
-                        .onTrue(Commands.sequence(Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = true;
-                            m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = false;
-                            m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = true;
-                            m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = false;
-                            m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                        }).withTimeout(1.0)));
-
-    }
+                this::getRotationInput, () -> m_driver.getPOV() == 180));     
+    } 
 
     public Command getSubsystemCheckCommand() {
         return m_systemCheckManager.getCheckCommand();
+    }
+
+    public Command getAutonomousCommand() {
+      return m_autoManager.getAutoCommand();
     }
 
     public double getForwardInput() {
@@ -138,10 +106,7 @@ public class RobotContainer {
     }
 
     public double getRotationInput() {
-        return -square(deadband(m_driver.getLeftTriggerAxis(), 0.1)); // FIX ME: For some reason
-                                                                      // only
-                                                                      // works on sim left
-                                                                      // trigger axis
+        return -square(deadband(m_driver.getLeftTriggerAxis(), 0.1)); 
     }
 
     public double getWristJogger() {

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.superstructure.Superstructure;
+//import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel;
 import frc.robot.subsystems.swerve.Swerve;
 
@@ -41,9 +41,9 @@ public class SystemsCheckManager {
         m_chooser.addOption("Drivetrain Check",
                 Commands.sequence(runModuleCheckSequence(0), new WaitCommand(2.0),
                         runModuleCheckSequence(1), new WaitCommand(2.0), runModuleCheckSequence(2),
-                        new WaitCommand(2.0), runModuleCheckSequence(3)));
+                        new WaitCommand(2.0), runModuleCheckSequence(3))); }
 
-        m_chooser.addOption("Superstructure Cone Check",
+        /**m_chooser.addOption("Superstructure Cone Check",
                 Commands.sequence(Superstructure.intakeGroundCone(), new WaitCommand(1.0),
                         Superstructure.scoreConeLevel(NodeLevel.HYBRID),
                         Superstructure.epsilonWaitCommand(), new WaitCommand(1.0),
@@ -55,7 +55,7 @@ public class SystemsCheckManager {
                         Superstructure.intakeGroundCone(), new WaitCommand(1.0),
                         Superstructure.scoreCubeLevel(NodeLevel.HIGH),
                         Superstructure.epsilonWaitCommand()));
-    }
+    }*/
 
     public Command getCheckCommand() {
         return m_chooser.get();

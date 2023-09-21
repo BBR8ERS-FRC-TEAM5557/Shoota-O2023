@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Constants;
-//import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.ObjectiveTracker.GamePiece;
 import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel;
 import frc.robot.subsystems.swerve.Swerve;
@@ -45,7 +45,7 @@ public class AutoRoutineManager {
 
         generateTrajectories();
         generateEventMap();
-        generateAutoChoices();
+
         Logger.getInstance().recordOutput("AutoTraj", new Trajectory());
 
         if (Constants.kTuningMode) {
@@ -73,17 +73,19 @@ public class AutoRoutineManager {
         }
     }
 
+    
     private void generateEventMap() {
+        /*
         m_eventMap.put("intakeCube", new PrintCommand("[Intaking Cube!!!]")
                 .andThen(Superstructure.intakeGroundCube().withTimeout(3.0)));
         m_eventMap.put("intakeDown", new PrintCommand("[Intaking Cone!!!]")
                 .andThen(Superstructure.intakeGroundCone().withTimeout(3.0)));
-
+ */
         m_eventMap.put("prepScoreHighCone", new PrintCommand("[Scoring High Cone!!!]")
                 .andThen(Superstructure.setSuperstructureScore(NodeLevel.HIGH, GamePiece.CONE)));
         m_eventMap.put("prepScoreHighCube", new PrintCommand("[Scoring High Cube!!!]")
                 .andThen(Superstructure.setSuperstructureScore(NodeLevel.HIGH, GamePiece.CUBE)));
-    }
+    } 
 
     private Command getFollowComand(PathPlannerTrajectory path) {
         PPSwerveControllerCommand followCommand =
