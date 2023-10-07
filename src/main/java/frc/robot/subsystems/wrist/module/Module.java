@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve.module;
+package frc.robot.subsystems.wrist.module;
 
 public class Module {
     

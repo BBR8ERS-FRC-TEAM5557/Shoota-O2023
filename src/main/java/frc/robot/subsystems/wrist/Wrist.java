@@ -1,5 +1,5 @@
-package frc.robot.subsystems.swerve;
+package frc.robot.subsystems.wrist;
 
-public class Swerve {
+public class Wrist {
     
 }
