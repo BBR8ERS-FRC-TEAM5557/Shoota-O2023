@@ -43,6 +43,15 @@ public class RobotContainer {
     public static Wrist m_wrist;
     public static Roller m_roller;
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+  public Command getAutonomousCommand() {
+    return Commands.print("No autonomous command configured");
+  }
+}
+=======
+>>>>>>> Stashed changes
     public static AutoRoutineManager m_autoManager;
     public static SystemsCheckManager m_systemCheckManager;
 
@@ -54,7 +63,11 @@ public class RobotContainer {
                     new ModuleIOSparkMax(2, kBLDriveMotor, kBLTurnMotor, kBLCancoder, kBLOffset),
                     new ModuleIOSparkMax(3, kBRDriveMotor, kBRTurnMotor, kBRCancoder, kBROffset));
             m_wrist = new Wrist(new WristIOSparkMax());
+<<<<<<< Updated upstream
             //m_roller = new Roller(new RollerIOSparkMax());
+=======
+            m_roller = new Roller(new RollerIOSparkMax());
+>>>>>>> Stashed changes
         } else {
             
         }
@@ -69,7 +82,11 @@ public class RobotContainer {
             m_wrist = new Wrist(new WristIO() {});
         }
         if (m_roller == null) {
+<<<<<<< Updated upstream
            // m_roller = new Roller(new RollerIO() {});
+=======
+           m_roller = new Roller(new RollerIO() {});
+>>>>>>> Stashed changes
         }
 
         m_autoManager = new AutoRoutineManager(m_swerve);
@@ -123,4 +140,9 @@ public class RobotContainer {
     public static double square(double value) {
         return Math.copySign(value * value, value);
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
