@@ -72,13 +72,6 @@ public class Superstructure {
         public static final SuperstructureGoal GROUND_CUBE_INTAKE =
                 new SuperstructureGoal(-9.3, 0.0);
 
-/**
-        public static final SuperstructureGoal SHELF_CONE_INTAKE =
-                new SuperstructureGoal(60.113914, 0.579607);
-        public static final SuperstructureGoal SHELF_CUBE_INTAKE =
-                new SuperstructureGoal(60.113914, 0.579607);
- */
-
         public static final SuperstructureGoal SLIDE_CUBE_INTAKE =
                 new SuperstructureGoal(50.0, 0.00);
 
