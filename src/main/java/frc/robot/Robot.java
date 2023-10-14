@@ -27,18 +27,15 @@ import frc.lib.team6328.Alert.AlertType;
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
     private Command m_subsystemCheckCommand;
-    private RobotContainer m_robotContainer;
-
     private final Timer canErrorTimer = new Timer();
     private final Timer disabledTimer = new Timer();
 
-    private final Alert logReceiverQueueAlert =
-            new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
-    private final Alert canErrorAlert =
-            new Alert("CAN errors detected, robot may not be controllable.", AlertType.ERROR);
+    private final Alert logReceiverQueueAlert = new Alert("Logging queue exceeded capacity, data will NOT be logged.",
+            AlertType.ERROR);
+    private final Alert canErrorAlert = new Alert("CAN errors detected, robot may not be controllable.",
+            AlertType.ERROR);
     private final Alert lowBatteryAlert = new Alert(
-            "Battery voltage is very low, consider turning off the robot or replacing the battery.",
-            AlertType.WARNING);
+            "Battery voltage is very low, consider turning off the robot or replacing the battery.", AlertType.WARNING);
 
     @Override
     public void robotInit() {
@@ -54,15 +51,13 @@ public class Robot extends LoggedRobot {
         }
         logger.start();
 
-
         // Log active commands
         Map<String, Integer> commandCounts = new HashMap<>();
         BiConsumer<Command, Boolean> logCommandFunction = (Command command, Boolean active) -> {
             String name = command.getName();
             int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
             commandCounts.put(name, count);
-            Logger.getInstance().recordOutput(
-                    "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()),
+            Logger.getInstance().recordOutput("CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()),
                     active);
             Logger.getInstance().recordOutput("CommandsAll/" + name, count > 0);
         };
@@ -76,7 +71,6 @@ public class Robot extends LoggedRobot {
             logCommandFunction.accept(command, false);
         });
 
-
         // Start timers
         canErrorTimer.reset();
         canErrorTimer.start();
@@ -85,7 +79,7 @@ public class Robot extends LoggedRobot {
 
         // Instantiate RobotContainer
         System.out.println("[Init] Instantiating RobotContainer");
-        m_robotContainer = new RobotContainer();
+        new RobotContainer();
     }
 
     @Override
