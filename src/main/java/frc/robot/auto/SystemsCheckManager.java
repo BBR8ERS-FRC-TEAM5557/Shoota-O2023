@@ -1,15 +1,14 @@
 package frc.robot.auto;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-//import frc.robot.subsystems.superstructure.Superstructure;
-// import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel; not used
 import frc.robot.subsystems.swerve.Swerve;
 
 public class SystemsCheckManager {

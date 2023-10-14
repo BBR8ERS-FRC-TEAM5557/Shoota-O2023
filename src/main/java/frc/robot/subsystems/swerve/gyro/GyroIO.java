@@ -22,7 +22,6 @@ public interface GyroIO {
         @Override
         public void fromLog(LogTable table) {
             // TODO Auto-generated method stub
-            
         }
     }
 
