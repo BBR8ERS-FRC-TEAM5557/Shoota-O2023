@@ -31,7 +31,6 @@ import frc.robot.subsystems.swerve.commands.TeleopDrive;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
 import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.module.ModuleIO;
-import frc.robot.subsystems.swerve.module.ModuleIOSim;
 import frc.robot.subsystems.swerve.module.ModuleIOSparkMax;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
@@ -43,10 +42,10 @@ import static frc.robot.Constants.RobotMap.*;
 
 public class RobotContainer {
     public static final XboxController m_driver = new XboxController(0);
-    public static final XboxController m_operator = new XboxController(1);
+    //public static final XboxController m_operator = new XboxController(1);
     public static Swerve m_swerve;
-   // public static Wrist m_wrist;
-   // public static Roller m_roller;
+    public static Wrist m_wrist;
+    public static Roller m_roller;
 
     public static RobotStateEstimator m_stateEstimator;
 
@@ -60,11 +59,10 @@ public class RobotContainer {
                     new ModuleIOSparkMax(1, kFRDriveMotor, kFRTurnMotor, kFRCancoder, kFROffset),
                     new ModuleIOSparkMax(2, kBLDriveMotor, kBLTurnMotor, kBLCancoder, kBLOffset),
                     new ModuleIOSparkMax(3, kBRDriveMotor, kBRTurnMotor, kBRCancoder, kBROffset));
-            m_wrist = new Wrist(new WristIOSparkMax());
-            m_roller = new Roller(new RollerIOSparkMax());
+            //m_wrist = new Wrist(new WristIOSparkMax());
+            //m_roller = new Roller(new RollerIOSparkMax());
         } else {
-            m_swerve = new Swerve(new GyroIO() {}, new ModuleIOSim(), new ModuleIOSim(),
-                    new ModuleIOSim(), new ModuleIOSim());
+            m_swerve = new Swerve(new GyroIO() {}, null, null, null, null);
         }
 
         // Instantiate missing subsystems
@@ -78,22 +76,23 @@ public class RobotContainer {
         }
         if (m_roller == null) {
             m_roller = new Roller(new RollerIO() {});
-        }
-    }
+        }       
+    
         m_autoManager = new AutoRoutineManager(m_swerve);
         m_systemCheckManager = new SystemsCheckManager(m_swerve);
         m_stateEstimator = RobotStateEstimator.getInstance();
         DriveMotionPlanner.configureControllers();
 
         configureBindings();
-    /**
+    
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Driver");
         shuffleboardTab.addString("Node Type", () -> ObjectiveTracker.getNodeLevel().name() + " "
                 + ObjectiveTracker.getGamePiece().name());
-        shuffleboardTab.addString("Super State", () -> Superstructure.getCurrentGoal().name());
-         */
+        //shuffleboardTab.addString("Super State", () -> Superstructure.getCurrentGoal().name());
+       
+    }
 
-    private void configureBindings() {
+        private void configureBindings() {
         // Bind driver and operator controls
         //System.out.println("[Init] Binding controls");
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -111,23 +110,8 @@ public class RobotContainer {
                         () -> m_swerve.setKinematicLimits(SwerveConstants.kScoringLimits)))
                 .onFalse(new InstantCommand(
                         () -> m_swerve.setKinematicLimits(SwerveConstants.kUncappedLimits)))
-                .whileTrue(Superstructure.intakeGroundCone());*/
-
-        // Operator sets cube intake
-        new Trigger(() -> m_operator.getLeftTriggerAxis() > 0.5)
-                .onTrue(new InstantCommand(
-                        () -> m_swerve.setKinematicLimits(SwerveConstants.kScoringLimits)))
-                .onFalse(new InstantCommand(
-                        () -> m_swerve.setKinematicLimits(SwerveConstants.kUncappedLimits)))
-                .whileTrue(Superstructure.intakeGroundCube());
-
-        // Operator sets Substation intake
-        new Trigger(m_operator::getRightBumper)
-                .onTrue(new InstantCommand(
-                        () -> m_swerve.setKinematicLimits(SwerveConstants.kScoringLimits)))
-                .onFalse(new InstantCommand(
-                        () -> m_swerve.setKinematicLimits(SwerveConstants.kUncappedLimits)))
-                .whileTrue(Superstructure.intakeSubstation());
+                .whileTrue(Superstructure.intakeGroundCone());
+    
 
         // Sets superstructure state on operator Right Trigger hold
         new Trigger(() -> m_operator.getRightTriggerAxis() > 0.5)
@@ -137,11 +121,9 @@ public class RobotContainer {
                         () -> m_swerve.setKinematicLimits(SwerveConstants.kUncappedLimits)))
                 .whileTrue(Commands.sequence(new WaitUntilCommand(
                         () -> m_swerve.isUnderKinematicLimit(SwerveConstants.kScoringLimits)),
-                        Superstructure.setScoreTeleop()));
+                        Superstructure.setScoreTeleop()));*/
 
-        // Ejects gamepiece when operator presses A button
-        new Trigger(m_operator::getAButton).onTrue(new ConditionalCommand(m_roller.scoreCone(),
-                m_roller.scoreCube(), () -> ObjectiveTracker.getGamePiece() == GamePiece.CONE));
+
 /**
         // Adjusts the scoring objective
         new Trigger(() -> m_operator.getPOV() == 0)
@@ -155,36 +137,7 @@ public class RobotContainer {
 
 
         // Endgame alerts
-        new Trigger(() -> DriverStation.isTeleopEnabled() && DriverStation.getMatchTime() > 0.0
-                && DriverStation.getMatchTime() <= Math.round(30.0)).onTrue(Commands.run(() -> {
-                    LEDs.getInstance().endgameAlert = true;
-                    m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                    m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                }).withTimeout(1.5).andThen(Commands.run(() -> {
-                    LEDs.getInstance().endgameAlert = false;
-                    m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                    m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                }).withTimeout(1.0)));
-
-        new Trigger(() -> DriverStation.isTeleopEnabled() && DriverStation.getMatchTime() > 0.0
-                && DriverStation.getMatchTime() <= Math.round(15.0))
-                        .onTrue(Commands.sequence(Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = true;
-                            m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = false;
-                            m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = true;
-                            m_driver.setRumble(RumbleType.kBothRumble, 1.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 1.0);
-                        }).withTimeout(0.5), Commands.run(() -> {
-                            LEDs.getInstance().endgameAlert = false;
-                            m_driver.setRumble(RumbleType.kBothRumble, 0.0);
-                            m_operator.setRumble(RumbleType.kBothRumble, 0.0);
-                        }).withTimeout(1.0)));
+        
 
     }
 
@@ -208,13 +161,10 @@ public class RobotContainer {
         return -square(deadband(m_driver.getRightX(), 0.15));
     }
 
-    public double getElevatorJogger() {
-        return -square(deadband(m_operator.getLeftY(), 0.15));
-    }
-
+/**
     public double getWristJogger() {
         return -square(deadband(m_operator.getRightY(), 0.15));
-    }
+    } */
 
     private static double deadband(double value, double tolerance) {
         if (Math.abs(value) < tolerance)
