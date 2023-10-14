@@ -1,4 +1,4 @@
-package frc.robot.subsystems.wrist;
+/*package frc.robot.subsystems.wrist;
 
 import static frc.robot.subsystems.wrist.WristConstants.constrainDegrees;
 import static frc.robot.subsystems.wrist.WristConstants.kCruiseVelocity;
@@ -159,3 +159,4 @@ public class Wrist extends SubsystemBase {
                 () -> Math.abs(getState().position - m_goal.position) < kPadding);
     }
 }
+*/
