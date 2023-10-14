@@ -1,4 +1,6 @@
-/*package frc.robot.auto;
+/*
+// TODO Fix AutoRoutineManager
+package frc.robot.auto;
 
 import java.io.File;
 import java.io.FileFilter;

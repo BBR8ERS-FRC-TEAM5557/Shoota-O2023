@@ -4,39 +4,44 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.kIsReal;
+import static frc.robot.Constants.RobotMap.kBLCancoder;
+import static frc.robot.Constants.RobotMap.kBLDriveMotor;
+import static frc.robot.Constants.RobotMap.kBLOffset;
+import static frc.robot.Constants.RobotMap.kBLTurnMotor;
+import static frc.robot.Constants.RobotMap.kBRCancoder;
+import static frc.robot.Constants.RobotMap.kBRDriveMotor;
+import static frc.robot.Constants.RobotMap.kBROffset;
+import static frc.robot.Constants.RobotMap.kBRTurnMotor;
+import static frc.robot.Constants.RobotMap.kFLCancoder;
+import static frc.robot.Constants.RobotMap.kFLDriveMotor;
+import static frc.robot.Constants.RobotMap.kFLOffset;
+import static frc.robot.Constants.RobotMap.kFLTurnMotor;
+import static frc.robot.Constants.RobotMap.kFRCancoder;
+import static frc.robot.Constants.RobotMap.kFRDriveMotor;
+import static frc.robot.Constants.RobotMap.kFROffset;
+import static frc.robot.Constants.RobotMap.kFRTurnMotor;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-//import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.Commands;
-//import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-//import frc.robot.auto.AutoRoutineManager;
 import frc.robot.auto.SystemsCheckManager;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerIO;
-//import frc.robot.subsystems.roller.RollerIOSparkMax;
 import frc.robot.subsystems.superstructure.ObjectiveTracker;
-//import frc.robot.subsystems.superstructure.Superstructure;
-//import frc.robot.subsystems.superstructure.ObjectiveTracker.Direction;
-//import frc.robot.subsystems.superstructure.ObjectiveTracker.GamePiece;
 import frc.robot.subsystems.swerve.Swerve;
-//import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.commands.TeleopDrive;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
 import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.module.ModuleIO;
 import frc.robot.subsystems.swerve.module.ModuleIOSparkMax;
-//import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.DriveMotionPlanner;
 import frc.robot.util.RobotStateEstimator;
-import static frc.robot.Constants.*;
-import static frc.robot.Constants.RobotMap.*;
 
 public class RobotContainer {
     public static final XboxController m_driver = new XboxController(0);
