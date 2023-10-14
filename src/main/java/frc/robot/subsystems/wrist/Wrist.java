@@ -1,4 +1,4 @@
-/*package frc.robot.subsystems.wrist;
+package frc.robot.subsystems.wrist;
 
 import static frc.robot.subsystems.wrist.WristConstants.constrainDegrees;
 import static frc.robot.subsystems.wrist.WristConstants.kCruiseVelocity;
@@ -7,8 +7,11 @@ import static frc.robot.subsystems.wrist.WristConstants.kHomeAmpsThreshold;
 import static frc.robot.subsystems.wrist.WristConstants.kHomeVoltage;
 import static frc.robot.subsystems.wrist.WristConstants.kPadding;
 import static frc.robot.subsystems.wrist.WristConstants.kTimeToCruise;
+
 import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team6328.TunableNumber;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.wrist.WristIO.WristIOInputs;
 import frc.robot.util.Util;
 
@@ -58,7 +60,7 @@ public class Wrist extends SubsystemBase {
                         3.0))).onTrue(homeWrist());
 
         // Manual Home Trigger
-        new Trigger(() -> RobotContainer.m_operator.getBButton()).whileTrue(homeWrist());
+        // new Trigger(() -> RobotContainer.m_operator.getBButton()).whileTrue(homeWrist()); Unable To Work
 
     }
 
@@ -159,4 +161,3 @@ public class Wrist extends SubsystemBase {
                 () -> Math.abs(getState().position - m_goal.position) < kPadding);
     }
 }
-*/

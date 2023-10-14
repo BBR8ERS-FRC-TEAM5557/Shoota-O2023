@@ -20,6 +20,8 @@ public class GyroIOPigeon2 implements GyroIO {
         pigeon.zeroGyroBiasNow();
         pigeon.setYaw(0.0);
         pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_2_Gyro, 20);
+        
+        System.out.println("[Init] GyroIOPigeon2 Ready");
     }
 
     public void updateInputs(GyroIOInputs inputs) {
