@@ -20,22 +20,22 @@ public class SwerveConstants {
     public static final double kMaxOmega = 11.5; //radians per second
     public static final double kMaxAttainableSpeed = kMaxSpeed * 0.85; // Max out at 85% to make sure speeds are attainable (4.6 mps)
     public static final double kMaxAcceleration = 3.0; // m/s^2
-    public static final double kMaxAttainableAcceleration = kMaxAcceleration * 0.85;
-
+    public static final double kMaxAttainableAcceleration = kMaxAcceleration * 0.8;
+//cancoder is reversed constant --> set
 
     public static final boolean kCanCoderInverted = false;
     public static final int kAbsoluteResetIterations = 100;
     public static final double kAbsoluteResetMaxOmega = 4.0; //must rotate at less than a degree per second
 
-    public static final double kAngleGearReduction = 1.0;
-    public static final double kDriveGearReduction = 1.0;
-    public static final double kWheelCircumference = Units.inchesToMeters(4.0) * Math.PI * 2.0;
+    public static final double kAngleGearReduction = 150.0 / 7.0;
+    public static final double kDriveGearReduction = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    public static final double kWheelCircumference = Units.inchesToMeters(4.0) * Math.PI;
 
-    public static final double kAnglekP = 0.6; // FIXME: error(rotations) * kP = volts -> kp = 0.6 = 12.0 volts / 20 rotations
+    public static final double kAnglekP = 0.3; // FIXME: error(rotations) * kP = volts -> kp = 0.6 = 12.0 volts / 20 rotations
     public static final double kAnglekI = 0.0;
     public static final double kAnglekD = 0.0;
 
-    public static final double kDrivekP = 0.003; // FIXME: error(rpm) * kP = volts -> kp = 0.6 = 12.0 volts / 5000 rpm
+    public static final double kDrivekP = 0.000; // FIXME: error(rpm) * kP = volts -> kp = 0.6 = 12.0 volts / 5000 rpm
     public static final double kDrivekI = 0.0;
     public static final double kDrivekD = 0.0;
 
@@ -51,7 +51,7 @@ public class SwerveConstants {
     public static final double kRotationkI = 0.0;
     public static final double kRotationkD = 0.0;
 
-    public static final double kSnapMaxOmega = kMaxOmega * 0.85;
+    public static final double kSnapMaxOmega = kMaxOmega * 0.35;
     public static final double kSnapMaxAlpha = kSnapMaxOmega / 0.75;
 
 
@@ -94,7 +94,7 @@ public class SwerveConstants {
 
         kDriveMotorConfiguration.kShouldInvert = false;
         kDriveMotorConfiguration.kVoltageCompensation = 12.0;
-        kDriveMotorConfiguration.kSmartCurrentLimit = 40.0;
+        kDriveMotorConfiguration.kSmartCurrentLimit = 50.0;
         kDriveMotorConfiguration.kIdleMode = IdleMode.kBrake;
     }
 
@@ -109,7 +109,7 @@ public class SwerveConstants {
     static {
         kAngleMotorConfiguration.pid = kAnglePIDConfiguration;
 
-        kAngleMotorConfiguration.kShouldInvert = false;
+        kAngleMotorConfiguration.kShouldInvert = true;
         kAngleMotorConfiguration.kVoltageCompensation = 12.0;
         kAngleMotorConfiguration.kSmartCurrentLimit = 20.0;
         kAngleMotorConfiguration.kIdleMode = IdleMode.kBrake;

@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.lib.team5557.factory.BurnManager;
 import frc.lib.team5557.factory.SparkMaxFactory;
 import frc.lib.team6328.TunableNumber;
 
@@ -48,7 +49,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     public ModuleIOSparkMax(int moduleNumber, int driveMotorID, int angleMotorID, int canCoderID,
             double angleOffsetDeg) {
-        System.out.println("[Init] Creating ModuleIOSparkMax");
+        System.out.println("[Init] Creating ModuleIOSparkMax" + moduleNumber);
         this.m_angleOffsetDeg = angleOffsetDeg;
 
         configAngleEncoder(canCoderID);
@@ -60,6 +61,18 @@ public class ModuleIOSparkMax implements ModuleIO {
 
         m_angleMotorEncoder = m_angleMotor.getEncoder();
         m_driveMotorEncoder = m_driveMotor.getEncoder();
+
+        m_angleMotorPID.setPositionPIDWrappingMinInput(0.0);
+        m_angleMotorPID.setPositionPIDWrappingMaxInput(kAngleGearReduction);
+        m_angleMotorPID.setPositionPIDWrappingEnabled(true);
+        
+        BurnManager.burnFlash(m_angleMotor);
+        BurnManager.burnFlash(m_driveMotor);
+
+        var resetSuccesful = false;
+        int resetIteration = 0;
+        while(!resetSuccesful && resetIteration < 5)
+            resetSuccesful = resetToAbsolute();
     }
 
     private void configAngleEncoder(int id) {
@@ -82,15 +95,6 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     private void configAngleMotor(int id) {
         m_angleMotor = SparkMaxFactory.createNEO(id, kAngleMotorConfiguration);
-
-        m_angleMotorPID.setPositionPIDWrappingMinInput(0.0);
-        m_angleMotorPID.setPositionPIDWrappingMaxInput(kAngleGearReduction);
-        m_angleMotorPID.setPositionPIDWrappingEnabled(true);
-
-        var resetSuccesful = false;
-        int resetIteration = 0;
-        while(!resetSuccesful && resetIteration < 5)
-            resetSuccesful = resetToAbsolute();
     }
 
     /** Updates the set of loggable inputs. */
@@ -109,7 +113,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
         inputs.angleAbsolutePositionRad = Units.degreesToRadians(m_absoluteEncoder.getAbsolutePosition());
         inputs.angleInternalPositionRad = rotationsToRadians(m_angleMotorEncoder.getPosition(), kAngleGearReduction);
-        inputs.angleInternalVelocityRadPerSec = m_angleMotorEncoder.getVelocity() * (Math.PI * 2.0) / (60.0 * kAngleGearReduction); 
+        inputs.angleInternalVelocityRadPerSec = rotationsToRadians(m_angleMotorEncoder.getVelocity(), kAngleGearReduction) / 60.0;
         inputs.angleAppliedVolts = m_angleMotor.getAppliedOutput() * m_angleMotor.getBusVoltage();
         inputs.angleCurrentAmps = new double[] { m_angleMotor.getOutputCurrent() };
         inputs.angleTempCelsius = new double[] { m_angleMotor.getMotorTemperature() };
@@ -149,6 +153,15 @@ public class ModuleIOSparkMax implements ModuleIO {
     }
 
     public void setAngleVoltage(double voltage) {
+        if (m_angleMotorEncoder.getVelocity() < kAbsoluteResetMaxOmega) {
+            if (++resetIteration >= kAbsoluteResetIterations) {
+                resetIteration = 0;
+                resetToAbsolute();
+            }
+        } else {
+            resetIteration = 0;
+        }
+
         m_angleMotorPID.setReference(voltage, ControlType.kVoltage);
     }
 

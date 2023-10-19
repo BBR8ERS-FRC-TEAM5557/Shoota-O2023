@@ -44,7 +44,7 @@ import frc.robot.util.DriveMotionPlanner;
 import frc.robot.util.RobotStateEstimator;
 
 public class RobotContainer {
-    public static final XboxController m_driver = new XboxController(0);
+    public static final XboxController m_driver = new XboxController(1);
     //public static final XboxController m_operator = new XboxController(1);
     public static Swerve m_swerve;
    // public static Wrist m_wrist;
