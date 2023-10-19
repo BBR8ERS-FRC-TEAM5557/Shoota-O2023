@@ -1,4 +1,3 @@
-
 package frc.lib.team5557.factory;
 
 import com.revrobotics.CANSparkMax;
@@ -14,10 +13,8 @@ import frc.lib.team5557.util.CANDeviceId;
 import frc.lib.team5557.util.CANDeviceId.CANDeviceType;
 
 public class SparkMaxFactory {
-
     public static final int configCANTimeout = 500;
     public static final int configCount = 4;
-    private static final boolean shouldBurn = BurnManager.shouldBurn();
 
     private static final CANDeviceFinder can = new CANDeviceFinder();
 
@@ -44,7 +41,7 @@ public class SparkMaxFactory {
         public double kD = 0.0;
         public double kF = 0.0;
         public double kTolerance = 0.0;
-        public double kMaxEffort = 1.0;
+        public double kMaxEffort = 12.0;
     }
 
     public static class SoftLimitsConfiguration {
@@ -64,9 +61,7 @@ public class SparkMaxFactory {
         SparkMaxPIDController pid = sparkMax.getPIDController();
         RelativeEncoder encoder = sparkMax.getEncoder();
 
-        if(shouldBurn()) {
-            sparkMax.restoreFactoryDefaults();
-        }
+        BurnManager.restoreFactoryDefaults(sparkMax);
         
         sparkMax.setCANTimeout(configCANTimeout);
 
@@ -92,27 +87,18 @@ public class SparkMaxFactory {
                 pid.setD(config.pid.kD, 0);
                 pid.setFF(config.pid.kF, 0);
 
-                pid.setOutputRange(-config.pid.kMaxEffort, config.pid.kMaxEffort);
+                pid.setOutputRange(-config.pid.kMaxEffort, config.pid.kMaxEffort, 0);
                 pid.setIZone(config.pid.kTolerance * 2, 0);
-                pid.setIMaxAccum(1.0, 0);
+                pid.setIMaxAccum(5.0, 0);
             }
 
             if(config.limits != null) {
                 configSoftLimits(sparkMax, config.limits);
             }
         }
-
         sparkMax.setCANTimeout(0);
 
-        if(shouldBurn()) {
-            sparkMax.burnFlash();
-        }
-
         return sparkMax;
-    }
-
-    public static boolean shouldBurn() {
-        return shouldBurn;
     }
 
     public static void configFramesLeaderOrFollower(CANSparkMax sparkMax) {
@@ -135,6 +121,10 @@ public class SparkMaxFactory {
         sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
     }
 
+    public static void configFramesAbsoluteEncoderBoost(CANSparkMax sparkMax) {
+        sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+    }
+
     public static void configSoftLimits(CANSparkMax sparkMax, SoftLimitsConfiguration config) {
         if(!Double.isNaN(config.kLowerLimit)) {
             sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float)config.kLowerLimit);
@@ -151,4 +141,4 @@ public class SparkMaxFactory {
         }
     }
 
-} 
+}
