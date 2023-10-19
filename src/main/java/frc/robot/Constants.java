@@ -28,9 +28,9 @@ public class Constants {
         
 
 
-        public static final int kRollerMotor = 31;
+        public static final int kRollerMotor = 41;
 
-        public static final int kWristMotor = 41;
+        public static final int kWristMotor = 31;
 
 
     }

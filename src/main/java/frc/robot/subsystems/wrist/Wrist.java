@@ -7,13 +7,13 @@ import static frc.robot.subsystems.wrist.WristConstants.kHomeAmpsThreshold;
 import static frc.robot.subsystems.wrist.WristConstants.kHomeVoltage;
 import static frc.robot.subsystems.wrist.WristConstants.kPadding;
 import static frc.robot.subsystems.wrist.WristConstants.kTimeToCruise;
-
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team6328.TunableNumber;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.wrist.WristIO.WristIOInputs;
 import frc.robot.util.Util;
 
@@ -53,15 +54,23 @@ public class Wrist extends SubsystemBase {
         System.out.println("[Init] Creating Wrist");
         this.m_io = io;
 
-        // Automatic Home Trigger
-        new Trigger(() -> (m_mode == ControlMode.POSITION || m_mode == ControlMode.MOTION_PROFILE)
-                && (Util.epsilonEquals(m_demand, kEncoderHomePosition, 3.0))
-                && (Util.epsilonEquals(m_inputs.WristInternalPositionDeg, kEncoderHomePosition,
-                        3.0))).onTrue(homeWrist());
+        ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Wrist");
+        shuffleboardTab.addNumber("Position Internal", () -> Util.truncate(getState().position, 2))
+                .withWidget(BuiltInWidgets.kGraph);
+        shuffleboardTab
+                .addNumber("Position Absolute",
+                        () -> Util.truncate(m_inputs.WristAbsolutePositionDeg, 2))
+                .withWidget(BuiltInWidgets.kGraph);
+        shuffleboardTab.addNumber("Velocity", () -> Util.truncate(getState().velocity, 2))
+                .withWidget(BuiltInWidgets.kGraph);
+        shuffleboardTab.addNumber("Demand", () -> Util.truncate(m_demand, 2))
+                .withWidget(BuiltInWidgets.kGraph);
+        shuffleboardTab.addNumber("Output", () -> Util.truncate(m_inputs.WristAppliedVolts, 2))
+                .withWidget(BuiltInWidgets.kGraph);
 
-        // Manual Home Trigger
-        // new Trigger(() -> RobotContainer.m_operator.getBButton()).whileTrue(homeWrist()); Unable To Work
-
+        shuffleboardTab.addString("Control Mode", () -> getControlMode().name());
+        shuffleboardTab.addString("Command",
+                () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "NONE");
     }
 
     @Override
@@ -79,6 +88,14 @@ public class Wrist extends SubsystemBase {
         } else {
             m_setpoint = m_profile.calculate(Timer.getFPGATimestamp() - m_profileTimestamp);
             m_io.setAngleDegrees(m_setpoint.position, m_setpoint.velocity);
+
+            Logger.getInstance().recordOutput("Wrist/Setpoint", m_setpoint.position);
+        }
+
+        if (cruiseVelocity.hasChanged(cruiseVelocity.hashCode())
+                || desiredTimeToSpeed.hasChanged(desiredTimeToSpeed.hashCode())) {
+            m_constraints = new TrapezoidProfile.Constraints(cruiseVelocity.get(),
+                    (cruiseVelocity.get() / desiredTimeToSpeed.get()));
         }
     }
 
@@ -114,8 +131,8 @@ public class Wrist extends SubsystemBase {
     }
 
     public synchronized TrapezoidProfile.State getState() {
-        return new TrapezoidProfile.State(m_inputs.WristInternalPositionDeg,
-                m_inputs.WristInternalVelocityDegPerSec);
+        //return new TrapezoidProfile.State(m_inputs.WristAbsolutePositionDeg, m_inputs.WristAbsoluteVelocityDegPerSec);
+        return new TrapezoidProfile.State(m_inputs.WristInternalPositionDeg, m_inputs.WristInternalVelocityDegPerSec);
     }
 
 
@@ -127,7 +144,7 @@ public class Wrist extends SubsystemBase {
     public Command homeWrist() {
         return Commands
                 .sequence(new InstantCommand(() -> m_io.shouldEnableUpperLimit(false)),
-                        new RunCommand(() -> runVoltage(-kHomeVoltage), this)
+                        new RunCommand(() -> runVoltage(kHomeVoltage), this)
                                 .until(() -> m_inputs.WristCurrentAmps[0] > kHomeAmpsThreshold),
                         new InstantCommand(() -> m_io.resetSensorPosition(kEncoderHomePosition)),
                         setWristAngleProfiled(kEncoderHomePosition))
@@ -144,20 +161,24 @@ public class Wrist extends SubsystemBase {
     }
 
     // Wait decorator commands
-    public Command tuckWaitCommand(double length) {
-        return new WaitUntilCommand(() -> getState().position < length);
+    public Command tuckWaitCommand(double angle) {
+        return new WaitUntilCommand(() -> getState().position > angle);
     }
 
-    public Command extendWaitCommand(double length) {
-        return new WaitUntilCommand(() -> getState().position > length);
+    public Command extendWaitCommand(double angle) {
+        return new WaitUntilCommand(() -> getState().position < angle);
     }
 
-    public Command epsilonWaitCommand(double length) {
-        return new WaitUntilCommand(() -> Math.abs(getState().position - length) < kPadding);
+    public Command epsilonWaitCommand(double angle) {
+        return new WaitUntilCommand(() -> Math.abs(getState().position - angle) < kPadding);
     }
 
     public Command epsilonWaitCommand() {
         return new WaitUntilCommand(
                 () -> Math.abs(getState().position - m_goal.position) < kPadding);
+    }
+
+    public ControlMode getControlMode() {
+        return m_mode;
     }
 }

@@ -62,7 +62,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         m_angleMotorEncoder = m_angleMotor.getEncoder();
         m_driveMotorEncoder = m_driveMotor.getEncoder();
 
-        m_angleMotorPID.setPositionPIDWrappingMinInput(0.0);
+        m_angleMotorPID.setPositionPIDWrappingMinInput(0);
         m_angleMotorPID.setPositionPIDWrappingMaxInput(kAngleGearReduction);
         m_angleMotorPID.setPositionPIDWrappingEnabled(true);
         

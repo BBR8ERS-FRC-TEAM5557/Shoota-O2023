@@ -40,14 +40,15 @@ import frc.robot.subsystems.swerve.gyro.GyroIO;
 import frc.robot.subsystems.swerve.gyro.GyroIOPigeon2;
 import frc.robot.subsystems.swerve.module.ModuleIO;
 import frc.robot.subsystems.swerve.module.ModuleIOSparkMax;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.DriveMotionPlanner;
 import frc.robot.util.RobotStateEstimator;
 
 public class RobotContainer {
     public static final XboxController m_driver = new XboxController(1);
-    //public static final XboxController m_operator = new XboxController(1);
+    public static final XboxController m_operator = new XboxController(0);
     public static Swerve m_swerve;
-   // public static Wrist m_wrist;
+    public static Wrist m_wrist;
     public static Roller m_roller;
 
     public static RobotStateEstimator m_stateEstimator;
@@ -74,7 +75,7 @@ public class RobotContainer {
                     new ModuleIO() {}, new ModuleIO() {});
         }
         
-       /* if (m_wrist == null) {
+        /**if (m_wrist == null) {
             m_wrist = new Wrist(new WristIO() {});
         }*/
         if (m_roller == null) {

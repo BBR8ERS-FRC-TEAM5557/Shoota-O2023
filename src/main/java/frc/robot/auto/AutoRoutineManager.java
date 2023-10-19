@@ -1,4 +1,4 @@
-/*
+/** 
 // TODO Fix AutoRoutineManager
 package frc.robot.auto;
 
@@ -10,20 +10,20 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-//import com.pathplanner.lib.commands.FollowPathWithEvents;
-//import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.pathplanner.lib.server.PathPlannerServer;
-//import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.Commands;
-//import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Constants;
 //import frc.robot.subsystems.superstructure.Superstructure;
-//import frc.robot.subsystems.superstructure.ObjectiveTracker.GamePiece;
-//import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel;
+import frc.robot.subsystems.superstructure.ObjectiveTracker.GamePiece;
+import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 //import frc.robot.util.DriveMotionPlanner;
@@ -46,7 +46,7 @@ public class AutoRoutineManager {
 
 
         generateTrajectories();
-        generateEventMap();
+        //generateEventMap();
 
         Logger.getInstance().recordOutput("AutoTraj", new Trajectory());
 
@@ -75,9 +75,9 @@ public class AutoRoutineManager {
         }
     }
 
-    
+    /**
     private void generateEventMap() {
-        /*
+        
         m_eventMap.put("intakeCube", new PrintCommand("[Intaking Cube!!!]")
                 .andThen(Superstructure.intakeGroundCube().withTimeout(3.0)));
         m_eventMap.put("intakeDown", new PrintCommand("[Intaking Cone!!!]")
@@ -103,9 +103,8 @@ public class AutoRoutineManager {
         return m_chooser.get();
     }
 
-    /*private void setPose(Pose2d pose) {
+    private void setPose(Pose2d pose) {
         RobotStateEstimator.getInstance().setPose(pose);
-    }
+    } 
 
-}
-*/
+}*/

@@ -1,4 +1,4 @@
-/*
+/** 
 // TODO Fix Superstructure
 package frc.robot.subsystems.superstructure;
 
@@ -9,16 +9,14 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.superstructure.ObjectiveTracker.GamePiece;
 import frc.robot.subsystems.superstructure.ObjectiveTracker.NodeLevel;
-//import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.Wrist;
 
 public class Superstructure {
-    //private static final Wrist wrist = RobotContainer.m_wrist;
+    private static final Wrist wrist = RobotContainer.m_wrist;
     private static final Roller roller = RobotContainer.m_roller;
 
-    //public static Command setSuperstructureGoal(SuperstructureGoal goal) {
-       // return Commands.sequence(wrist.setWristAngleProfiled(goal.wrist));
-    }
-
+    public static Command setSuperstructureGoal(SuperstructureGoal goal) {
+       /
 
     public static Command setSuperstructureScore(NodeLevel level, GamePiece piece) {
         SuperstructureGoal goal;
@@ -45,18 +43,18 @@ public class Superstructure {
                     goal = SuperstructureGoal.L1_SCORE;
             }
         }
-       // return setSuperstructureGoal(goal);
+        return setSuperstructureGoal(goal);
     }
 
     public static Command setScoreTeleop() {
         return setSuperstructureScore(ObjectiveTracker.getNodeLevel(),
                 ObjectiveTracker.getGamePiece())
-                      //  .finallyDo(interupted -> setSuperstructureGoal(SuperstructureGoal.STOW));
+                        .finallyDo(interupted -> setSuperstructureGoal(SuperstructureGoal.STOW));
     }
 
     public static Command scoreCubeLevel(NodeLevel level) {
         return Commands.sequence(setSuperstructureScore(level, GamePiece.CUBE),
-              //  setSuperstructureGoal(SuperstructureGoal.STOW));
+                setSuperstructureGoal(SuperstructureGoal.STOW));
     }
 
     public static Command scoreConeLevel(NodeLevel level) {
@@ -99,5 +97,4 @@ public class Superstructure {
         }
 
     }
-}
-*/
+} */
