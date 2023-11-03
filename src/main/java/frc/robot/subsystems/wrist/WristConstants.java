@@ -1,5 +1,4 @@
 package frc.robot.subsystems.wrist;
-
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import frc.lib.team5557.factory.SparkMaxFactory.PIDConfiguration;
